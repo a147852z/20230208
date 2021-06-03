@@ -7,6 +7,7 @@ export default class App_2 extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      web3: false,
       account: "unknown",
       defaultAccount: "0x2A2c9fb3132a513AD77144fD2D0BB872fb1E765E",
       transAccount: "",
@@ -14,7 +15,7 @@ export default class App_2 extends Component {
       tokenName: "",
       symbol: "",
       userBalance: "0",
-      loading: true,
+      loading: false,
       amount: "",
     };
     this.loadWeb3();
@@ -30,8 +31,10 @@ export default class App_2 extends Component {
     if (window.ethereum) {
       window.web3 = new Web3(window.ethereum);
       await window.ethereum.enable();
+      this.setState({ web3: true });
     } else if (window.web3) {
       window.web3 = new Web3(window.web3.currentProvider);
+      this.setState({ web3: true });
     } else {
       window.alert(
         "Non-Ethereum browser detected. You should consider trying MetaMask!"
@@ -106,16 +109,16 @@ export default class App_2 extends Component {
   }
 
   render() {
-    if (this.state.loading) {
-      <p>Loading...</p>;
+    if (!this.state.web3) {
+      return <div>Loading Web3, accounts, and contract...</div>;
+    } else if (this.state.loading) {
+      return <p>Loading...</p>;
     }
     document.title = "Simple transfer dapp";
     return (
       <div className="App">
         <h1>Good to Go!</h1>
-
         <h2>{this.state.tokenName}!!</h2>
-
         <p>Address: {this.state.account}</p>
         <p>
           Balance: {this.state.userBalance} {this.state.symbol}
