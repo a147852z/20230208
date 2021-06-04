@@ -9,7 +9,7 @@
 1. Clone Repository
 
     ```sh
-    $ git clone https://github.com/San-Zero/hello_react_dapp.git
+    $ git clone https://github.com/San-Zero/simple_react_dapp.git
     $ cd hello_react_dapp
     ```
 2. Run Dapp
