@@ -3,29 +3,44 @@ import Web3 from "web3";
 import "./App.css";
 import SimpleToken from "./contracts/SimpleToken.json";
 
-export default class App_2 extends Component {
+export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       web3: false,
       account: "unknown",
-      defaultAccount: "0x2A2c9fb3132a513AD77144fD2D0BB872fb1E765E",
+      defaultAccount: "0x9Ec4c413328380b225153b424Df8452782A64C6A",
       transAccount: "",
       Contract: {},
+      contractAddress: "",
       tokenName: "",
       symbol: "",
+      decimals: 0,
       userBalance: "0",
       loading: false,
       amount: "",
+      date: new Date(),
     };
+
     this.loadWeb3();
+    this.loadBlockchainData();
   }
 
-  async componentDidMount() {
-    await this.loadWeb3();
-    await this.loadBlockchainData();
+  componentDidMount() {
+    // await this.loadWeb3();
+    this.loadBlockchainData();
+
+    this.timerID = setInterval(() => this.tick(), 1000);
   }
 
+  componentWillUnmount() {
+    clearInterval(this.timerID);
+  }
+  tick() {
+    this.setState({
+      date: new Date(),
+    });
+  }
   async loadWeb3() {
     //web3連線
     if (window.ethereum) {
@@ -67,13 +82,17 @@ export default class App_2 extends Component {
         .call();
       const balance = tokenBalance / 1000000000000000000;
 
+      const contractAddress = await TokenData.address;
       const tokenName = await Contract.methods.name().call();
       const symbol = await Contract.methods.symbol().call();
+      const decimals = await Contract.methods.decimals().call();
 
       this.setState({
+        contractAddress: contractAddress.toString(),
         tokenName: tokenName.toString(),
         symbol: symbol.toString(),
         userBalance: balance.toString(),
+        decimals: decimals,
       });
     } else {
       window.alert("Token contract not deployed to detected network.");
@@ -84,7 +103,10 @@ export default class App_2 extends Component {
     this.setState({ loading: true });
     //透過合約裡的approve方法獲取轉帳的許可值
     this.state.Contract.methods
-      .approve(this.state.transAccount, this.state.amount)
+      .approve(
+        this.state.transAccount,
+        this.state.amount + "0".repeat(this.state.decimals)
+      )
       .send({ from: this.state.defaultAccount });
     this.setState({ loading: false });
   };
@@ -93,7 +115,10 @@ export default class App_2 extends Component {
     this.setState({ loading: true });
     //透過合約裡的transfer方法從發布者手中轉帳
     this.state.Contract.methods
-      .transfer(this.state.transAccount, this.state.amount)
+      .transfer(
+        this.state.transAccount,
+        this.state.amount + "0".repeat(this.state.decimals)
+      )
       .send({ from: this.state.defaultAccount });
     this.setState({ loading: false });
   };
@@ -114,36 +139,49 @@ export default class App_2 extends Component {
     } else if (this.state.loading) {
       return <p>Loading...</p>;
     }
-    document.title = "Simple transfer dapp";
+    document.title = "區塊鏈互動網頁";
     return (
-      <div className="App">
-        <h1>Good to Go!</h1>
-        <h2>{this.state.tokenName}!!</h2>
-        <p>Address: {this.state.account}</p>
-        <p>
-          Balance: {this.state.userBalance} {this.state.symbol}
-        </p>
-        <hr />
+      <div className="App-header">
         <div>
-          <div>
-            欲轉帳位址:
-            <input
-              type="text"
-              value={this.state.transAccount}
-              onChange={(e) => this.handleInputAccount(e)}
-            />
+          <h1>NKUST GSLAB Yi-Tung Liu</h1>
+          <h2>這裡是 {this.state.tokenName}!! 區塊鏈互動網頁</h2>
+          <h5>請先做驗證 再轉帳</h5>
+          <div className="infoBlock">
+            <p>合約位址: {this.state.contractAddress}</p>
+            <p>用戶位址: {this.state.account}</p>
+            <p>
+              用戶餘額: {this.state.userBalance} {this.state.symbol}
+            </p>
+            <p>
+              欲轉帳位址:
+              <input
+                className="inputBox"
+                type="text"
+                value={this.state.transAccount}
+                onChange={(e) => this.handleInputAccount(e)}
+              />
+            </p>
+            <p>
+              欲轉帳金額:
+              <input
+                className="inputBox"
+                type="text"
+                value={this.state.amount}
+                onChange={(e) => this.handleInputAmount(e)}
+              />
+            </p>
+            <p>
+              <button className="buttonVerify" onClick={() => this.approve()}>
+                驗證
+              </button>
+              <button
+                className="buttonTransfer"
+                onClick={() => this.transfer()}
+              >
+                轉帳
+              </button>
+            </p>
           </div>
-          <div>
-            欲轉帳金額:
-            <input
-              type="text"
-              value={this.state.amount}
-              onChange={(e) => this.handleInputAmount(e)}
-            />
-          </div>
-
-          <button onClick={() => this.approve()}>Approve</button>
-          <button onClick={() => this.transfer()}>Transfer</button>
         </div>
       </div>
     );

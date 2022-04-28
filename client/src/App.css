@@ -1,4 +1,5 @@
 .App {
+  background-color: #cdd1df;
   text-align: center;
 }
 
@@ -7,16 +8,78 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-image: url('./backgroundImage.jpg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: rgb(255, 255, 255);
 }
 
 .App-link {
   color: #09d3ac;
+}
+
+.infoBlock{
+  background-color: #282d3f;
+  color: white;
+  padding-top:3px;
+  padding-left:20px;
+  padding-right:20px;
+  padding-bottom:6px; 
+  box-shadow: 12px 12px 7px rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  position: relative;
+}
+
+.inputBox{
+  border-radius: 5px;
+}
+.buttonVerify{
+  width:100px;
+  height:80px;
+  font-size:large;
+  font-family: Microsoft JhengHei;
+  position:absolute;
+  bottom:25px;
+  right:160px;
+  background-color: #cdd1df;
+  border-radius: 5px;
+  box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.7);
+
+}
+
+.buttonTransfer{
+  width:100px;
+  height:80px;
+  font-size:large;
+  font-family: Microsoft JhengHei;
+  position:absolute;
+  bottom:25px;
+  right:30px; 
+  background-color: #cdd1df;
+  border-radius: 5px;
+  box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.7);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: Microsoft JhengHei;
+  text-align: center;
+}
+
+p,
+div {
+  font-family: sans-serif;
+  font-size: large;
 }
