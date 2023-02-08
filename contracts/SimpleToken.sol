@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract SimpleToken is ERC20 {
   uint256 public initialSupply = 10000000000000000000000;
   
-  constructor() public ERC20("HelloCoin","H@") {
+  constructor() public ERC20("Hello","H") {
   	_mint(msg.sender,initialSupply);
   }
 }
